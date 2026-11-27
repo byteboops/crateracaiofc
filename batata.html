@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cratera Çaí — canal oficial</title>
+  <link rel="icon" type="image/png" href="/acai.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Agrave+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Libre+Franklin:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --roxo-escuro: #2d0a3e;
+      --roxo-principal: #6a1b9a;
+      --roxo-claro: #9c27b0;
+      --vermelho: #d32f2f;
+      --vermelho-claro: #ff5252;
+      --branco: #ffffff;
+      --cinza-claro: #f5f5f5;
+      --sombra: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --borda-arredondada: 16px;
+    }
+
+    body {
+      font-family: 'Libre Franklin', sans-serif;
+      background: var(--roxo-escuro);
+      color: var(--branco);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3, h4, .titulo-agrave {
+      font-family: 'Agrave Pro', Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--branco);
+      text-shadow: 0 0 8px var(--vermelho), 0 0 20px var(--vermelho-claro);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .secao-branca {
+      background: var(--branco);
+      color: var(--roxo-escuro);
+      padding: 4rem 0;
+      margin-top: 2rem;
+    }
+
+    .secao-branca h2 {
+      color: var(--roxo-principal);
+      text-shadow: none;
+    }
+
+    /* ===== HERO: VÍDEO DE FUNDO + FITA CARROSSEL COM TEXTO GRUDADO ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 500px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.55) saturate(1.2);
+      pointer-events: none;
+    }
+
+    .fita-carrossel {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 0 25px var(--vermelho), 0 0 60px var(--vermelho-claro);
+    }
+
+    /* O track se move; o padrão listrado E o texto estão no MESMO elemento — andam juntos */
+    .fita-track {
+      display: flex;
+      width: max-content;
+      animation: deslizaTrack 20s linear infinite;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--vermelho) 0px,
+        var(--vermelho) 40px,
+        var(--vermelho-claro) 40px,
+        var(--vermelho-claro) 80px
+      );
+      background-size: 160px 100%;
+      padding: 1.8rem 0;
+    }
+
+    .fita-track span {
+      font-family: 'Agrave Pro', Georgia, serif;
+      font-size: clamp(1.4rem, 4vw, 3rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--branco);
+      text-shadow:
+        0 0 8px #000,
+        0 0 20px var(--roxo-escuro),
+        0 0 40px #000;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      padding: 0 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .fita-track span::after {
+      content: " ★ ";
+      color: var(--branco);
+    }
+
+    @keyframes deslizaTrack {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ===== PERSONAGENS ===== */
+    .personagens-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .personagem-card {
+      background: var(--cinza-claro);
+      border-radius: var(--borda-arredondada);
+      padding: 1.5rem;
+      text-align: center;
+      width: 220px;
+      box-shadow: var(--sombra);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-bottom: 6px solid var(--roxo-principal);
+    }
+
+    .personagem-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 24px rgba(106, 27, 154, 0.4);
+    }
+
+    .personagem-card img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      border-radius: 50%;
+      background: var(--branco);
+      padding: 8px;
+      border: 3px solid var(--vermelho);
+      margin-bottom: 1rem;
+    }
+
+    .personagem-card h3 {
+      font-size: 1.5rem;
+      color: var(--roxo-principal);
+      margin-bottom: 0.3rem;
+    }
+
+    .personagem-card p { font-size: 0.9rem; color: #444; }
+
+    /* ===== NOTÍCIAS ===== */
+    .noticias-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .noticia-card {
+      background: var(--cinza-claro);
+      border-radius: var(--borda-arredondada);
+      padding: 2rem;
+      flex: 1 1 300px;
+      max-width: 500px;
+      box-shadow: var(--sombra);
+      border-left: 8px solid var(--vermelho);
+      transition: transform 0.15s;
+    }
+
+    .noticia-card:hover { transform: scale(1.01); }
+
+    .noticia-card h3 {
+      color: var(--roxo-principal);
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .noticia-card p { color: #333; }
+
+    .noticia-card .data {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #777;
+      font-style: italic;
+    }
+
+    .botao-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: var(--vermelho);
+      color: var(--branco);
+      font-weight: 700;
+      font-family: 'Libre Franklin', sans-serif;
+      padding: 0.9rem 2.2rem;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    .botao-link:hover {
+      background: var(--vermelho-claro);
+      transform: scale(1.03);
+    }
+
+    .botao-container { text-align: center; }
+
+    /* ===== TEORIAS ===== */
+    .teorias-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .teoria-card {
+      background: #f3e5f5;
+      border-radius: var(--borda-arredondada);
+      padding: 1.8rem;
+      flex: 1 1 280px;
+      max-width: 360px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border-top: 6px solid var(--roxo-claro);
+      color: #2d0a3e;
+      font-style: italic;
+      position: relative;
+    }
+
+    .teoria-card::before {
+      content: "❝";
+      font-size: 3rem;
+      color: var(--roxo-claro);
+      position: absolute;
+      top: 0.2rem;
+      left: 0.8rem;
+      opacity: 0.4;
+      font-family: serif;
+    }
+
+    .teoria-card p { position: relative; z-index: 1; margin-top: 1rem; }
+
+    .teoria-card .autor {
+      display: block;
+      margin-top: 1.2rem;
+      font-style: normal;
+      font-weight: 700;
+      color: var(--vermelho);
+      text-align: right;
+      font-size: 0.9rem;
+    }
+
+    .aviso-teorias {
+      background: var(--roxo-principal);
+      color: var(--branco);
+      padding: 1rem 2rem;
+      border-radius: 40px;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      box-shadow: 0 0 20px var(--vermelho);
+    }
+
+    .form-teoria {
+      background: var(--cinza-claro);
+      border-radius: var(--borda-arredondada);
+      padding: 2rem;
+      margin-top: 2.5rem;
+      box-shadow: var(--sombra);
+      border: 3px dashed var(--roxo-principal);
+    }
+
+    .form-teoria h3 {
+      color: var(--roxo-principal);
+      margin-bottom: 1.2rem;
+      text-align: center;
+      font-size: 1.6rem;
+    }
+
+    .form-teoria label {
+      display: block;
+      font-weight: 600;
+      color: #333;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-teoria input,
+    .form-teoria textarea {
+      width: 100%;
+      padding: 0.9rem;
+      border-radius: 12px;
+      border: 2px solid #ccc;
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 1rem;
+      transition: border 0.2s;
+    }
+
+    .form-teoria input:focus,
+    .form-teoria textarea:focus {
+      outline: none;
+      border-color: var(--vermelho);
+    }
+
+    .form-teoria button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 1rem;
+      background: var(--roxo-principal);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .form-teoria button:hover { background: var(--roxo-claro); }
+
+    .feedback { margin-top: 1rem; text-align: center; font-weight: 600; }
+    .feedback.sucesso { color: #2e7d32; }
+    .feedback.erro { color: #c62828; }
+
+    /* ===== SPOTIFY ===== */
+    .spotify-container {
+      max-width: 700px;
+      margin: 2rem auto;
+      border-radius: var(--borda-arredondada);
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(106, 27, 154, 0.5);
+    }
+
+    .spotify-container iframe {
+      display: block;
+      width: 100%;
+      height: 380px;
+      border: none;
+    }
+
+    /* ===== BARRA INSCRITOS ===== */
+    .barra-inscritos {
+      background: var(--vermelho);
+      padding: 1rem 2rem;
+      margin-top: 3rem;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: 0 0 25px var(--vermelho-claro);
+      font-weight: 700;
+      color: white;
+    }
+
+    .barra-inscritos .contador {
+      font-size: 1.8rem;
+      font-family: 'Agrave Pro', Georgia, serif;
+      letter-spacing: 2px;
+    }
+
+    .barra-inscritos .texto {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #1a0522;
+      padding: 3rem 0 2rem;
+      margin-top: 4rem;
+      border-top: 4px solid var(--vermelho);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .creditos-dev { font-size: 0.95rem; color: #bbb; }
+    .creditos-dev strong { color: var(--vermelho-claro); }
+
+    /* Links do footer: texto puro, SEMPRE sublinhados, com mini logo ao lado */
+    .links-sociais {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .links-sociais a {
+      color: var(--branco);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .links-sociais a:hover {
+      color: var(--vermelho-claro);
+    }
+
+    .links-sociais a svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      h2 { font-size: 1.8rem; }
+      .personagem-card { width: 160px; }
+      .personagem-card img { width: 100px; height: 100px; }
+      .fita-track span { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO: VÍDEO DE FUNDO + FITA CARROSSEL (TEXTO E PADRÃO JUNTOS) ===== -->
+  <header class="hero" aria-label="Abertura do Cratera Çaí">
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="/acai.png" aria-hidden="true">
+      <source src="/acai-com-leite-ninho.mp4" type="video/mp4">
+    </video>
+    <div class="fita-carrossel" role="presentation">
+      <div class="fita-track">
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+        <span>Bem vindo(a) ao Cratera Çaí!</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PERSONAGENS ===== -->
+  <section class="secao-branca" aria-labelledby="titulo-personagens">
+    <div class="container">
+      <h2 id="titulo-personagens">PERSONAGENS</h2>
+      <div class="personagens-grid">
+        <div class="personagem-card">
+          <img src="/cai.png" alt="Çaí, um açaí" loading="lazy" decoding="async">
+          <h3>Çaí</h3>
+          <p>Um açaí cheio de personalidade.</p>
+        </div>
+        <div class="personagem-card">
+          <img src="/itoshi.png" alt="Itoshi, uma maçã vermelha" loading="lazy" decoding="async">
+          <h3>Itoshi</h3>
+          <p>Maçã vermelha, fria e calculista.</p>
+        </div>
+        <div class="personagem-card">
+          <img src="/max.png" alt="Max, um morango" loading="lazy" decoding="async">
+          <h3>Max</h3>
+          <p>Morango aventureiro e energético.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NOTÍCIAS ===== -->
+  <section class="secao-branca" aria-labelledby="titulo-noticias">
+    <div class="container">
+      <h2 id="titulo-noticias">NOTÍCIAS</h2>
+      <div class="noticias-container">
+        <article class="noticia-card">
+          <h3>Novo episódio de Çaí e os mistérios da cratera</h3>
+          <p>Çaí e Itoshi se aventuram em uma nova jornada para descobrir o que há no fundo da cratera. Será que Max vai aparecer?</p>
+          <span class="data">26 de novembro de 2026</span>
+        </article>
+        <article class="noticia-card">
+          <h3>Max ganha destaque em novo spin-off</h3>
+          <p>O morango mais querido do canal terá uma série própria! Fique ligado para mais novidades sobre o universo Cratera Çaí.</p>
+          <span class="data">20 de novembro de 2026</span>
+        </article>
+      </div>
+      <div class="botao-container">
+        <a href="/noticias.html" class="botao-link">Quer ver todas as notícias? Entre aqui.</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TEORIAS ===== -->
+  <section class="secao-branca" aria-labelledby="titulo-teorias">
+    <div class="container">
+      <h2 id="titulo-teorias">TEORIAS DOS FÃS</h2>
+      <div class="aviso-teorias">
+        Analisamos a melhor e adicionamos! Você percebe quando entrar no site e descobrir.
+      </div>
+      <div class="teorias-grid">
+        <div class="teoria-card">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. A teoria de que a cratera é na verdade um portal para outra dimensão.</p>
+          <span class="autor">— Fã anônimo</span>
+        </div>
+        <div class="teoria-card">
+          <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Itoshi pode ser o verdadeiro líder da cratera.</p>
+          <span class="autor">— Teoria placeholders</span>
+        </div>
+        <div class="teoria-card">
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco. Max guarda um segredo sobre a origem do açaí.</p>
+          <span class="autor">— Fã criativo</span>
+        </div>
+      </div>
+      <div class="form-teoria">
+        <h3>Envie sua teoria</h3>
+        <form id="formTeoria" novalidate>
+          <label for="nomeTeoria">Seu nome (ou apelido)</label>
+          <input type="text" id="nomeTeoria" name="nome" placeholder="Como quer ser chamado?" required>
+          <label for="textoTeoria">Sua teoria</label>
+          <textarea id="textoTeoria" name="teoria" rows="4" placeholder="Conte-nos sua teoria sobre o Cratera Çaí..." required></textarea>
+          <button type="submit">Enviar teoria</button>
+          <div id="feedbackTeoria" class="feedback" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MÚSICAS ===== -->
+  <section class="secao-branca" aria-labelledby="titulo-musicas">
+    <div class="container">
+      <h2 id="titulo-musicas">CATÁLOGO DE MÚSICAS</h2>
+      <div class="spotify-container">
+        <iframe
+          src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator"
+          title="Playlist aleatória no Spotify"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <div class="botao-container" style="margin-top: 2rem;">
+        <a href="https://open.spotify.com/user/crateracai" class="botao-link" target="_blank" rel="noopener noreferrer">Quer ver todas as músicas? Veja aqui.</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BARRA INSCRITOS ===== -->
+  <div class="container">
+    <div class="barra-inscritos" aria-label="Quantidade de inscritos">
+      <span class="texto">INSCRITOS</span>
+      <span class="contador" id="contadorInscritos">12.847</span>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container footer-content">
+      <div class="links-sociais">
+        <a href="https://open.spotify.com/user/crateracai" target="_blank" rel="noopener noreferrer">
+          <!-- Mini logo oficial do Spotify -->
+          <svg viewBox="0 0 24 24" role="img" aria-label="Spotify" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+            <path fill="#fff" d="M17.6 10.8c-2.9-1.7-7.7-1.8-10.5-.9-.4.1-.8-.1-1-.5-.1-.4.1-.8.5-1 3.2-1 8.5-.9 11.8 1 .4.2.5.7.3 1-.2.4-.7.6-1.1.4zm-.3 2.4c-.2.3-.6.4-.9.2-2.4-1.5-6.1-1.9-8.9-1.1-.4.1-.7-.1-.8-.4-.1-.4.1-.7.4-.8 3.2-.9 7.3-.5 10.1 1.2.3.2.4.6.1.9zm-.8 2.4c-.2.2-.4.3-.6.2-2.1-1.3-4.8-1.6-7.9-.9-.2 0-.4 0-.5-.2-.1-.2 0-.4.2-.4 3.4-.7 6.4-.4 8.8 1 .2.1.2.3.2.5-.1.2-.1.3-.2.3z"/>
+          </svg>
+          Spotify
+        </a>
+        <a href="https://www.youtube.com/@crateracai" target="_blank" rel="noopener noreferrer">
+          <!-- Mini logo oficial do YouTube -->
+          <svg viewBox="0 0 24 24" role="img" aria-label="YouTube" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="4" width="22" height="16" rx="4" fill="#FF0000"/>
+            <path fill="#fff" d="M10 8.5v7l6-3.5-6-3.5z"/>
+          </svg>
+          YouTube
+        </a>
+      </div>
+      <div class="creditos-dev">
+        Desenvolvido por <strong>DeepSeek</strong> — empresa <strong>DeepSeek Ai Co., Ltd.</strong>
+      </div>
+      <div style="color: #777; font-size: 0.8rem;">
+        © 2026 Cratera Çaí — sem direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mjqwiqjojkzobuysziyv.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-a6ZFK6eBlC18J4kWzFxFA_pTBcAddk';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const form = document.getElementById('formTeoria');
+    const feedback = document.getElementById('feedbackTeoria');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const nome = document.getElementById('nomeTeoria').value.trim();
+      const teoria = document.getElementById('textoTeoria').value.trim();
+
+      if (!nome || !teoria) {
+        feedback.textContent = 'Por favor, preencha todos os campos.';
+        feedback.className = 'feedback erro';
+        return;
+      }
+
+      feedback.textContent = 'Enviando sua teoria...';
+      feedback.className = 'feedback';
+
+      try {
+        const { error } = await supabase
+          .from('teorias')
+          .insert([{ nome: nome, teoria: teoria }]);
+        if (error) throw error;
+        feedback.textContent = 'Teoria enviada com sucesso! Obrigado por contribuir.';
+        feedback.className = 'feedback sucesso';
+        form.reset();
+      } catch (err) {
+        console.error('Erro ao enviar teoria:', err);
+        feedback.textContent = 'Ocorreu um erro ao enviar. Tente novamente mais tarde.';
+        feedback.className = 'feedback erro';
+      }
+    });
+  </script>
+</body>
+</html>
