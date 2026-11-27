@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Acompanhe as novidades, episódios e anúncios do universo Cratera Çaí.">
+  <title>Notícias — Cratera Çaí</title>
+  <link rel="icon" type="image/png" href="/acai.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Agrave+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Libre+Franklin:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --roxo-escuro: #2d0a3e;
+      --roxo-principal: #6a1b9a;
+      --roxo-claro: #9c27b0;
+      --vermelho: #d32f2f;
+      --vermelho-claro: #ff5252;
+      --branco: #ffffff;
+      --cinza-claro: #f5f5f5;
+      --sombra: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --borda-arredondada: 16px;
+    }
+
+    body {
+      font-family: 'Libre Franklin', sans-serif;
+      background: var(--roxo-escuro);
+      color: var(--branco);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 { 
+      font-family: 'Agrave Pro', Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .topo {
+      min-height: 310px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(156, 39, 176, .55), transparent 65%),
+        var(--roxo-escuro);
+      border-bottom: 4px solid var(--vermelho);
+    }
+
+    .topo-conteudo { max-width: 850px; }
+    .marca {
+      display: inline-block;
+      color: var(--branco);
+      font-weight: 700;
+      text-decoration: none;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,.7);
+    }
+    .topo h1 {
+      font-size: clamp(2.5rem, 7vw, 4.5rem);
+      line-height: 1.1;
+      text-shadow: 0 0 8px var(--vermelho), 0 0 24px var(--vermelho-claro);
+      margin-bottom: 1rem;
+    }
+    .topo p { font-size: 1.08rem; color: #eee; }
+
+    .secao-branca {
+      background: var(--branco);
+      color: var(--roxo-escuro);
+      padding: 4rem 0;
+      margin-top: 2rem;
+    }
+
+    .secao-branca h2 {
+      color: var(--roxo-principal);
+      text-shadow: none;
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: .7rem;
+    }
+
+    .introducao {
+      text-align: center;
+      color: #555;
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .noticias-container {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
+    .noticia-card {
+      background: var(--cinza-claro);
+      border-radius: var(--borda-arredondada);
+      padding: 2rem;
+      box-shadow: var(--sombra);
+      border-left: 8px solid var(--vermelho);
+      transition: transform .15s, box-shadow .15s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .noticia-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(106, 27, 154, .25);
+    }
+
+    .categoria {
+      display: inline-block;
+      background: #f3e5f5;
+      color: var(--roxo-principal);
+      border-radius: 30px;
+      padding: .3rem .8rem;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 1rem;
+    }
+
+    .noticia-card h3 {
+      color: var(--roxo-principal);
+      font-size: 1.5rem;
+      line-height: 1.3;
+      margin-bottom: .8rem;
+    }
+
+    .noticia-card p { color: #333; }
+    .noticia-card .data {
+      display: block;
+      margin-top: auto;
+      padding-top: 1.2rem;
+      font-size: .8rem;
+      color: #777;
+      font-style: italic;
+    }
+
+    .destaque {
+      grid-column: 1 / -1;
+      background: linear-gradient(120deg, #f5f5f5, #f3e5f5);
+      border-left-color: var(--roxo-principal);
+    }
+
+    .botao-link {
+      display: inline-block;
+      margin-top: 2.5rem;
+      background: var(--vermelho);
+      color: var(--branco);
+      font-weight: 700;
+      font-family: 'Libre Franklin', sans-serif;
+      padding: .9rem 2.2rem;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: background .2s, transform .2s;
+      font-size: 1rem;
+      text-align: center;
+      letter-spacing: .03em;
+    }
+
+    .botao-link:hover {
+      background: var(--vermelho-claro);
+      transform: scale(1.03);
+    }
+
+    .botao-container { text-align: center; }
+
+    .nota-editorial {
+      margin-top: 2rem;
+      padding: 1rem 1.3rem;
+      background: #f3e5f5;
+      border-radius: 12px;
+      color: #4a2456;
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    /* ===== FOOTER — mantido conforme a página principal ===== */
+    footer {
+      background: #1a0522;
+      padding: 3rem 0 2rem;
+      margin-top: 4rem;
+      border-top: 4px solid var(--vermelho);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .creditos-dev { font-size: .95rem; color: #bbb; }
+    .creditos-dev strong { color: var(--vermelho-claro); }
+
+    .links-sociais {
+      display: flex;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .links-sociais a {
+      color: var(--branco);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      transition: color .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .links-sociais a:hover { color: var(--vermelho-claro); }
+
+    .links-sociais a svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    @media (max-width: 700px) {
+      .noticias-container { grid-template-columns: 1fr; }
+      .destaque { grid-column: auto; }
+      .secao-branca h2 { font-size: 1.8rem; }
+      .noticia-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo-conteudo">
+      <a class="marca" href="/">← Voltar para a página inicial</a>
+      <h1>NOTÍCIAS</h1>
+      <p>Fique por dentro das novidades, episódios e histórias do universo Cratera Çaí.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="secao-branca" aria-labelledby="titulo-noticias">
+      <div class="container">
+        <h2 id="titulo-noticias">ÚLTIMAS NOVIDADES</h2>
+        <p class="introducao">Confira os anúncios mais recentes do canal e acompanhe o que está acontecendo na Cratera.</p>
+
+        <div class="noticias-container">
+          <article class="noticia-card destaque">
+            <span class="categoria">Episódios</span>
+            <h3>Novo episódio de Çaí e os mistérios da cratera</h3>
+            <p>Çaí e Itoshi se aventuram em uma nova jornada para descobrir o que há no fundo da cratera. A exploração pode trazer pistas inesperadas — e fica a pergunta: será que Max vai aparecer?</p>
+            <time class="data" datetime="2026-11-26">26 de novembro de 2026</time>
+          </article>
+
+          <article class="noticia-card">
+            <span class="categoria">Novos projetos</span>
+            <h3>Max ganha destaque em novo spin-off</h3>
+            <p>O morango mais querido do canal terá uma série própria! Fique ligado para acompanhar as novidades sobre o projeto e descobrir mais histórias do universo Cratera Çaí.</p>
+            <time class="data" datetime="2026-11-20">20 de novembro de 2026</time>
+          </article>
+        </div>
+
+        <p class="nota-editorial">Esta página reúne as notícias publicadas no site. Novas atualizações serão adicionadas aqui quando forem anunciadas.</p>
+
+        <div class="botao-container">
+          <a href="/" class="botao-link">Voltar para a página inicial</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div class="links-sociais">
+        <a href="https://open.spotify.com/user/crateracai" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" role="img" aria-label="Spotify" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+            <path fill="#fff" d="M17.6 10.8c-2.9-1.7-7.7-1.8-10.5-.9-.4.1-.8-.1-1-.5-.1-.4.1-.8.5-1 3.2-1 8.5-.9 11.8 1 .4.2.5.7.3 1-.2.4-.7.6-1.1.4zm-.3 2.4c-.2.3-.6.4-.9.2-2.4-1.5-6.1-1.9-8.9-1.1-.4.1-.7-.1-.8-.4-.1-.4.1-.7.4-.8 3.2-.9 7.3-.5 10.1 1.2.3.2.4.6.1.9zm-.8 2.4c-.2.2-.4.3-.6.2-2.1-1.3-4.8-1.6-7.9-.9-.2 0-.4 0-.5-.2-.1-.2 0-.4.2-.4 3.4-.7 6.4-.4 8.8 1 .2.1.2.3.2.5-.1.2-.1.3-.2.3z"/>
+          </svg>
+          Spotify
+        </a>
+        <a href="https://www.youtube.com/@crateracai" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" role="img" aria-label="YouTube" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="4" width="22" height="16" rx="4" fill="#FF0000"/>
+            <path fill="#fff" d="M10 8.5v7l6-3.5-6-3.5z"/>
+          </svg>
+          YouTube
+        </a>
+      </div>
+      <div class="creditos-dev">
+        Desenvolvido por <strong>DeepSeek</strong> — empresa <strong>DeepSeek Ai Co., Ltd.</strong>
+      </div>
+      <div style="color: #777; font-size: .8rem;">
+        © 2026 Cratera Çaí — sem direitos reservados.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
